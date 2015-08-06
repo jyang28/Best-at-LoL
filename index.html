@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+	<header>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    	<link rel="stylesheet" href="styles.css">
+    	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+		<script src="scripts/jquery.fittext.js"></script>
+		<script src="scripts/Chart.js"></script>
+		<script src="scripts/jquery.stellar.js"></script>
+		<script src="scripts/chromeSmoothScroll.js"></script>
+		<title>Best @ LoL: The Easiest Summoner Comparison Tool</title>
+	</header>
+	<body>
+		<section id="main" data-stellar-background-ratio="0.5">
+	    	<div class="container-fluid">
+				<div class="row">
+					<div style= "min-height: 23px; background-color: #000000; min-width: 1024 px; color: #CCCCCC">
+						<p style="float: left">ALL CONTENT © JONATHAN YANG 2015 UNLESS OTHERWISE NOTED</p>
+						<p style="float: right">Created by Jon Yang - <a href="http://jonyaoyang.com/" target="_blank">www.jonyaoyang.com</a></p>
+					</div>
+					<div class="col-lg-12" style="color: white">
+						<h5 id="tHeader" style="margin-top: 25px"><span style="color: red">BEST</span> AT LOL?</h5>
+						<h3>Simple, Visual, Side-By-Side Comparison</h3>
+						<h1 style="position: absolute; margin: auto; right: 0px; left: 0px; margin-top: 125px">How do <span style="color: red">You</span> Measure Up With Your <span style="color: red">Buddies</span> ?</h1>
+						<div id="inputs">
+							<h5>Type Names, Separated by Commas</h5>
+							<input id="userName" type="text" size="50" onkeypress="searchKeyPress(event);" onmouseover="reveal_1();" onmouseleave="hide();" placeholder="Example: Ollid, Silvermist, Elenmar">
+							<a href="#results"><button id="button" type="button" onclick="initiate()">Enter</button></a>
+							<h5 id="itext" style="text-shadow: 0 0 3px #FFFFFF">(Only Last 15 Ranked Games Are Counted in Our Analysis)</h5>
+						</div>
+						<a href="index.html"><button id="newSearch" type="button" style="margin-top:300px;color:black;display:none">Start a New Search</button></a>
+					</div>
+				</div>
+			</div>
+		</section>
+		<section id="results" data-stellar-background-ratio="0.5">
+			<div style= "min-height: 40px; background: radial-gradient(#333333, #000000); min-width: 1024 px"></div>
+			<h5 id="rHeader" style="text-shadow: 0 0 5px #FFFFFF">Comparison Results</h5>
+			<h4 style="text-shadow: 0 0 5px #FFFFFF">[Of Last 15 Games]</h4>
+			<div class="container-fluid" style="margin-top: 50px">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="outputs">
+							<div id="loading" style="position:absolute;margin-top:-50px;left:50%;display:none">
+								<img src="images/loading.gif" style="position:relative;left:-50%"/>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-4">
+						<div class="outputs">
+							<h3 class="invis_text" style="text-shadow: 0 0 3px #FFFFFF">KDA <i class="fa fa-chevron-down"></i></h3>
+							<canvas id="myChart_1" width="400" height="400"></canvas>
+						</div>
+					</div>					
+					<div class="col-lg-4">						
+						<div class="outputs">
+							<h3 class="invis_text" style="text-shadow: 0 0 3px #FFFFFF">Damage Dealt to Champs/Damage Taken <i class="fa fa-chevron-down"></i></h3>
+							<canvas id="myChart_2" width="400" height="400"></canvas>							
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<div class="outputs">
+							<h3 class="invis_text" style="text-shadow: 0 0 3px #FFFFFF">Wins <i class="fa fa-chevron-down"></i></h3>
+							<canvas id="myChart_3" width="400" height="400"></canvas>
+						</div>
+					</div>					
+				</div>
+				<div class="row">
+					<div id="bottom">
+						<a href="index.html" id="backButton" style="font-size: 200%; color: #000000"><i class="fa fa-cog fa-spin"></i> Start a <span style="color: #B20000">New</span> Search <i class="fa fa-cog fa-spin"></i></a>
+					</div>
+					<div style="margin-top: 50px; color: gray">
+						<p>Best at LoL® isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
+					</div>
+				</div>
+			</div>
+		</section>
+	</body>
+		<script>
+								$(function () {scrollTo(($(document).width() - $(window).width()) / 2, 0);});
+								
+								jQuery("#tHeader").fitText(1, { minFontSize: '25px', maxFontSize: '150px' });
+								jQuery("#rHeader").fitText(1, { minFontSize: '25px', maxFontSize: '100px' });
+								
+								function reveal_1()
+								{
+									$("#itext").animate({opacity:1},"fast");
+								}
+								
+								function reveal_2()
+								{
+									$(".invis_text").animate({opacity:1},"fast");
+								}
+								
+								function hide()
+								{
+									$("#itext").animate({opacity:0},"fast");
+								}
+							
+							    function searchKeyPress(e)
+							    {
+							        e = e || window.event;
+							        if (e.keyCode == 13)
+							        {
+							            document.getElementById('button').click();
+							        }
+							    }
+							    
+							    var x;
+								var temp_names = [];
+								var temp_wins = [];
+								var temp_dealt = [];
+								var temp_taken = [];
+								var temp_kills = [];
+								var temp_deaths = [];
+								var temp_assists = [];
+								var wins = 0;
+								var damage = 0;
+								var taken = 0;
+								var kills = 0;
+								var assists = 0;
+								var deaths = 0;
+								
+								function initiate()
+								{
+									$("#inputs").hide();
+									$("#itext").css({"opacity":"1"});
+									$("#loading").show();
+									$("#newSearch").show();
+									$(function () {scrollTo(($(document).width() - $(window).width()) / 2, 0);});
+									
+									var string = $("#userName").val().replace(/\s+/g,'').toLowerCase();
+									temp = string.split(",");
+									
+									for (x=0;x<temp.length;x++)
+									{
+										$.ajax({
+										type: 'GET',
+										url: 'ajax.php',
+										data: 'data=' + temp[x],
+										dataType: 'json',
+										success: function (json) {
+											temp_kills.push(json["kills"]);
+											temp_deaths.push(json["deaths"]);
+											temp_assists.push(json["assists"]);
+											temp_dealt.push(json["dealt"]);
+											temp_taken.push(json["taken"]);
+											temp_wins.push(json["wins"]);
+											if(temp.length == temp_kills.length)
+											{
+												$("#loading").hide();
+												var data_1 = {
+												    labels: temp,
+												    datasets: [
+												        {
+												            label: "Kills",
+												            fillColor: "#00FF00",
+												            data: temp_kills
+												        },
+												        {
+												            label: "Deaths",
+												            fillColor: "#FF0000",
+												            data: temp_deaths
+												        },
+												        {
+												            label: "Assists",
+												            fillColor: "#FF3399",
+												            data: temp_assists
+												        }
+												    ]
+												};												
+												var data_2 = {
+												    labels: temp,
+												    datasets: [
+												        {
+												            label: "Dealt",
+												            fillColor: "#00FF00",
+												            data: temp_dealt
+												        },
+												        {
+												            label: "Taken",
+												            fillColor: "#FF0000",
+												            data: temp_taken
+												        }
+												    ]
+												};
+												var data_3 = {
+												    labels: temp,
+												    datasets: [
+												        {
+												            label: "Wins",
+												            fillColor: "#00FF00",
+												            data: temp_wins
+												        }
+												    ]
+												};
+												var ctx_1 = document.getElementById("myChart_1").getContext("2d");												
+												var ctx_2 = document.getElementById("myChart_2").getContext("2d");
+												var ctx_3 = document.getElementById("myChart_3").getContext("2d");
+												var myBarChart_1 = new Chart(ctx_1).Bar(data_1,{
+													scaleGridLineColor : "#FFFFFF",
+													scaleFontColor: "#FFFFFF",
+													tooltipEvents: [" "]
+												});
+												var myBarChart_2 = new Chart(ctx_2).Bar(data_2,{
+													scaleGridLineColor : "#FFFFFF",
+													scaleFontColor: "#FFFFFF",
+													tooltipEvents: [" "]
+												});
+												var myBarChart_3 = new Chart(ctx_3).Bar(data_3,{
+													scaleGridLineColor : "#FFFFFF",
+													scaleFontColor: "#FFFFFF",
+													tooltipEvents: [" "]
+												});
+												reveal_2();
+											}
+										},
+										});
+									}
+								}
+								$.stellar({
+							    horizontalScrolling: false,
+							    verticalOffset: 0,
+							    horizontalOffset: 0});
+	</script>
+</html>
